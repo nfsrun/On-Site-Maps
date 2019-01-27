@@ -87,5 +87,7 @@ def index2():
 def index3():
     return jsonify(jsonData)
 
+
+# a method to run the app
 if __name__ == '__main__':
     app.run(debug=True)
