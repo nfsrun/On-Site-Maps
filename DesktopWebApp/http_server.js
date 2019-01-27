@@ -63,19 +63,15 @@ async function queryDatabase()
 	var arr = await new Promise(function(resolve, reject) {
         request.on('row', function(columns) {
             columns.forEach(function(column) {
-                // console.log("Point");
                 arr.push(column.value);
-                // console.log(arr);
             });
             resolve(arr);
         });
     });
-
-    var i;
-	
+	console.log(arr);
 	var output = '{\n\t\"output\" : [';
 	
-		for(i = 0; i < arr.length; i++) {
+		for(let i = 0; i < arr.length; i++) {
 			output.concat("\n\t\t{\n");
 			console.log(output);
 			var first = true;
@@ -83,11 +79,11 @@ async function queryDatabase()
 				"SELECT tblLoc.locationTypeName AS LocationType, coord.long AS long, coord.lat AS lat  FROM [dbo].[tblCoordinate] coord "
 					+ "JOIN [dbo].[tblObject] obj ON obj.objectID = coord.objectID "
 					+ "JOIN [dbo].[tblLocationType] tblLoc ON obj.locationTypeID = tblLoc.locationTypeID "
-					+ "WHERE obj.objectID = " + arr[i],
+					+ "WHERE obj.objectID = " + arr[0][0],
 				function(err, rowCount, rows)
 				{
-					console.log(rowCount + ' row(s) returned');
-					process.exit();
+					//console.log(rowCount + ' row(s) returned');
+					//process.exit();
 				}
 			);
 			connection.execSql(request1);
