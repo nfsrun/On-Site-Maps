@@ -25,6 +25,7 @@ const port = 3000;
 
 // kevin's stuff
 const Connection = require('tedious').Connection;
+
 const Request = require('tedious').Request;
 
 const config = {
@@ -33,11 +34,13 @@ const config = {
     server: 'edhackssqlserver.database.windows.net',
     options: {
         database: 'edhacks',
+		
         encrypt: true
     }
 }
 
 let connection = new Connection(config);
+
 
 connection.on('connect', function(err) {
     if (err) {
@@ -62,22 +65,23 @@ async function queryDatabase()
         }
     );
 	
-	request.on('row', function(columns) {
-        columns.forEach(function(column) {
+	request.on('done', function(rowCount, returnStatus, rows) {
+		console.log(typeof(rows));
+        rows.forEach(function(column) {
+			console.log('a');
             arr.push(column.value);
-            console.log(arr);
         });
     });
-	connection.execSql(request);
+	connection.prepare(request);
+	connection.execute(request);
+	console.log(arr);	
 	//check if all objects come in. 
 
     var i;
 	
-	// INSERT JSON CREATOR HERE
+	var output = '{\n\t\"output\" : [';
 	
-	// var output = '{\n\t\"output\" : [';
-	
-	// for(i = 0; i < arr.length; i++) {
+	for(i = 0; i < arr.length; i++) {
 	// 	output.concat("\n\t\t{\n");
 	// 	var first = true;
 	// 	var request1 = new Request(
@@ -114,9 +118,9 @@ async function queryDatabase()
 	// 	output.concat("\n\t]\n}");
 		
     //     //check if array output is as thought of
-	// 	console.log(output);
-	// 	return output;
-	// }
+	 	console.log(output);
+	 	return output;
+	}
 }
 
 // Transfer data to and render front end
