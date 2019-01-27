@@ -20,37 +20,22 @@ cursor.execute("select o.objectID, ot.objectTypeName, lt.locationTypeName, c.lon
 row = cursor.fetchone()
 
 allObjects = pd.DataFrame(columns=["objectID", "objectTypeName", "locationTypeName", "long", "lat"])
+allObjects2 = []
+
 
 while row:
     currObject = {}
-    currObject["objectID"] = row[0]
     currObject["objectTypeName"] = row[1]
     currObject["locationTypeName"] = row[2]
-    currObject["long"] = str(row[3])
-    currObject["lat"] = str(row[4])
-    allObjects = allObjects.append(currObject, ignore_index=True)
+    currObject["coordinate"] = {
+        "long": str(row[3]),
+        "lat": str(row[4])
+    }
+
+    # allObjects = allObjects.append(currObject, ignore_index=True)
+    allObjects2.append(currObject)
     row = cursor.fetchone()
 
-objectIDs = allObjects["objectID"].unique()
-
-jsonObjects = []
-
-for oID in objectIDs:
-    cObj = {}
-    idRelated = allObjects[allObjects["objectID"] == oID]
-
-    cObj["objectID"] = oID
-    cObj["objectTypeName"] = idRelated["objectTypeName"][0]
-    cObj["locationTypeName"] = idRelated["locationTypeName"][0]
-
-    cObj["coordinates"] = []
-    longs = idRelated["long"].values
-    lats = idRelated["lat"].values
-
-    for i in range(len(lats)):
-        cObj["coordinates"].append({"long": longs[i], "lat": lats[i]})
-
-    jsonObjects.append(cObj)
 
 
 cursor.execute("select * from tblData")
@@ -81,7 +66,7 @@ def index():
 
 @app.route('/allcoordinates/', methods=['GET'])
 def index2():
-    return jsonify(jsonObjects)
+    return jsonify(allObjects2)
 
 @app.route('/data/', methods=['GET'])
 def index3():
