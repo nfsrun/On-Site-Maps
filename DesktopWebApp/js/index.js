@@ -1,4 +1,18 @@
+// var string = "[2143214,1234132],[1234141,12343214]";
+// split string by commas
+// split string by 
 
+var socket = io.connect('http://localhost:3000');
+socket.on('news', function (data) {
+    console.log(data);
+    socket.emit('my other event', {my: 'data'});
+    console.log("RECEIVE");
+});
+
+
+
+// *********** Mapping Stuff ******************8
+// Query for minimum and maximum x, get median and set center coordinate
 var mymap = L.map('mapid').setView([49.262, -123.245], 17);
 
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
@@ -35,4 +49,12 @@ var circle3 = L.circle([49.26261, -123.2428], {
     fillOpacity: 1,
     radius: 5}).addTo(mymap);
 
-console.log("Hello");
+var latlngs = [
+    [49.2625, -123.2562],
+    [49.26045, -123.2482],
+    [49.26261, -123.2428]
+];
+
+// var polyLine = L.polyline(latlngs).addTo(mymap);
+
+// var polygon = L.polygon(latlngs).addTo(mymap);
