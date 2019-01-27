@@ -14,16 +14,8 @@ const io = require('socket.io')(server);
 const hostname = '127.0.0.1';
 const port = 3000;
 
-// Azure server connection/setup
-// my stuff
-// const endpoint = "";
-// const masterkey = "";
-// const client = new CosmosClient({endpoint: endpoint, auth: {masterkey: masterkey} });
+// Calls to SQL server
 
-
-// const databaseId = "";
-
-// kevin's stuff
 const Connection = require('tedious').Connection;
 const Request = require('tedious').Request;
 
@@ -39,11 +31,13 @@ const config = {
 
 let connection = new Connection(config);
 
+var outputArr = [];
 connection.on('connect', function(err) {
     if (err) {
         console.log(err)
     } else {
         console.log('Successful connect');
+        // sqlQuery();
         queryDatabase();
     }
 });
@@ -54,21 +48,44 @@ async function queryDatabase()
 	var arr1 = [];
     // Read all rows from table
 	var request = new Request(
-        "SELECT objectID FROM [dbo].[tblObject]",
+        // "SELECT objectID FROM [dbo].[tblObject]",
+        "SELECT * FROM tblData",
         function(err, rowCount, rows)
         {
+            console.log(err);
             console.log(rowCount + ' row(s) returned');
-            process.exit();
         }
     );
-	
-	request.on('row', function(columns) {
-        columns.forEach(function(column) {
-            arr.push(column.value);
-            console.log(arr);
+    connection.execSql(request);
+
+	var arr = await new Promise(function(resolve, reject) {
+        
+        request.on('row', function(columns) {
+            columns.forEach(function(column) {
+                arr.push(column.value);
+            });
+            resolve(arr);
         });
+
+        
     });
-	connection.execSql(request);
+
+
+    // console.log("76");
+    // console.log(arr);       
+    // io.on('connection', function(socket) {
+    //     // socket.emit('news', [{lat: 456}, {long: 123}]);
+    //     socket.emit('news', outputArr);
+    //     socket.on('my other event', function (data) {
+    //         console.log(data);
+    //     });
+    //     console.log('Connection')
+    // });
+    
+    // console.log("1:"); 
+    // console.log(arr);
+    // console.log("2:");
+    // console.log(arr);
 	//check if all objects come in. 
 
     var i;
@@ -116,18 +133,30 @@ async function queryDatabase()
     //     //check if array output is as thought of
 	// 	console.log(output);
 	// 	return output;
-	// }
+    // }
+    return arr;
 }
+
+
+
+
+async function makeQuery() {
+    var returnArr = await queryDatabase();
+    console.log(returnArr);
+    return returnArr; 
+}
+
 
 // Transfer data to and render front end
 
-io.on('connection', function(socket) {
-    socket.emit('news', [{lat: 456}, {long: 123}]);
-    socket.on('my other event', function (data) {
-        console.log(data);
-    });
-    console.log('Connection')
-});
+// io.on('connection', function(socket) {
+//     // socket.emit('news', [{lat: 456}, {long: 123}]);
+//     socket.emit('news', outputArr);
+//     socket.on('my other event', function (data) {
+//         console.log(data);
+//     });
+//     console.log('Connection')
+// });
 
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + '/index.html'));
@@ -140,4 +169,4 @@ app.get('/js/index.js', function(req, res) {
 app.use('/', router);
 server.listen(port, function() {
     console.log('Server started on port 3000...');
-});
+})
