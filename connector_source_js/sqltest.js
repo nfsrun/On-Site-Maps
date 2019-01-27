@@ -39,7 +39,7 @@ function queryDatabase()
 	var request1 = 
     // Read all rows from table
 	var request = new Request(
-        "SELECT objectTypeName FROM [dbo].[tblObjectType] object"
+        "SELECT objectID FROM [dbo].[tblObject]"
         function(err, rowCount, rows)
         {
             console.log(rowCount + ' row(s) returned');
@@ -53,7 +53,9 @@ function queryDatabase()
         });
     });
 	
-		connection.execSql(request);
+	//check if all objects come in. 
+	console.log(arr);
+	connection.execSql(request);
 	var i;
 	
 	// INSERT JSON CREATOR HERE
@@ -64,10 +66,10 @@ function queryDatabase()
 		output.concat("\n\t\t{\n");
 		var first = true;
 		var request1 = new Request(
-			"SELECT tblLoc.locationTypeName AS LocationType, coord.long AS long, coord.lat AS lat  FROM [dbo].[tblObjectType] obj "
-				+ "JOIN [dbo].[tblLocationType] tblLoc ON object.locationTypeID = tblLoc.locationTypeID "
-				+ "JOIN [dbo].[tblCoordinate] tblCoord ON object.locationTypeID = tblCoord.coordinateID "
-				+ "WHERE obj.objectID = " + arr[i] + ";",
+			"SELECT tblLoc.locationTypeName AS LocationType, coord.long AS long, coord.lat AS lat  FROM [dbo].[tblCoordinate] coord "
+				+ "JOIN [dbo].[tblObject] obj ON obj.objectID = coord.objectID "
+				+ "JOIN [dbo].[tblLocationType] tblLoc ON obj.locationTypeID = tblLoc.locationTypeID "
+				+ "WHERE obj.objectID = " + arr[i],
 			function(err, rowCount, rows)
 			{
 				console.log(rowCount + ' row(s) returned');
@@ -95,6 +97,8 @@ function queryDatabase()
 		connection.execSql(request1);
 		output = output.substr(0,output.length - 1);
 		output.concat("\n\t]\n}");
+		
+		//check if array output is as thought of
 		console.log(output);
 		return output;
 	}
