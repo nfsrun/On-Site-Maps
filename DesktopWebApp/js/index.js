@@ -3,11 +3,6 @@
 // split string by 
 
 var socket = io.connect('http://localhost:3000');
-socket.on('news', function (data) {
-    console.log(data);
-    socket.emit('my other event', {my: 'data'});
-    console.log("RECEIVE");
-});
 
 
 
@@ -23,37 +18,55 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=p
     id: 'mapbox.streets'
 }).addTo(mymap);
 
-var circle0 = L.circle([49.2625, -123.2452], {
-    color: 'red',
-    fillColor: 'red',
-    fillOpacity: 1,
-    radius: 5}).addTo(mymap);
+socket.on('news', function (data) {
+    console.log(data);
+
+    for (let i = 0; i < data.length; i += 4) {
+        var lat = data[i + 1];
+        var long = data[i + 2];
+        console.log(lat);
+        console.log(long);
+        var circle0 = L.circle([lat, long], {
+            color: 'red',
+            fillColor: 'red',
+            fillOpacity: 1,
+            radius: 3}).addTo(mymap);
+    }
+    socket.emit('my other event', {my: 'data'});
+    console.log("RECEIVE");
+});
+
+// var circle0 = L.circle([49.2625, -123.2452], {
+//     color: 'red',
+//     fillColor: 'red',
+//     fillOpacity: 1,
+//     radius: 5}).addTo(mymap);
 
 
-var circle1 = L.circle([49.26045, -123.2482], {
-    color: 'red',
-    fillColor: 'red',
-    fillOpacity: 1,
-    radius: 5}).addTo(mymap);
+// var circle1 = L.circle([49.26045, -123.2482], {
+//     color: 'red',
+//     fillColor: 'red',
+//     fillOpacity: 1,
+//     radius: 5}).addTo(mymap);
 
 
-var circle2 = L.circle([49.26262, -123.24685], {
-    color: 'red',
-    fillColor: 'red',
-    fillOpacity: 1,
-    radius: 5}).addTo(mymap);
+// var circle2 = L.circle([49.26262, -123.24685], {
+//     color: 'red',
+//     fillColor: 'red',
+//     fillOpacity: 1,
+//     radius: 5}).addTo(mymap);
 
-var circle3 = L.circle([49.26261, -123.2428], {
-    color: 'red',
-    fillColor: 'red',
-    fillOpacity: 1,
-    radius: 5}).addTo(mymap);
+// var circle3 = L.circle([49.26261, -123.2428], {
+//     color: 'red',
+//     fillColor: 'red',
+//     fillOpacity: 1,
+//     radius: 5}).addTo(mymap);
 
-var latlngs = [
-    [49.2625, -123.2562],
-    [49.26045, -123.2482],
-    [49.26261, -123.2428]
-];
+// var latlngs = [
+//     [49.2625, -123.2562],
+//     [49.26045, -123.2482],
+//     [49.26261, -123.2428]
+// ];
 
 // var polyLine = L.polyline(latlngs).addTo(mymap);
 
