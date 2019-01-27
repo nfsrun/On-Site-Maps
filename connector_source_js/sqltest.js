@@ -34,31 +34,24 @@ connection.on('connect', function(err)
 function queryDatabase()
 {
     console.log('Reading rows from the Table...');
-
+	var arr = [];
+	var arr1 = [];
+	var request1 = 
     // Read all rows from table
-<<<<<<< HEAD
 	var request = new Request(
         "SELECT objectID FROM [dbo].[tblObject]"
-=======
-    var request = new Request(
-        "SELECT tblCoord.long AS long, tblCoord.lat AS lat, tbl.locationTypeName AS locationTypeName FROM [dbo].[tblLocation] tblCoord"
-            + "JOIN [dbo].[tblLocationType] tblLoc ON tblCoord.locationTypeID = tblLoc.locationTypeID"
-	    + "JOIN [dbo].[tblLocationType] tlLoc ON tblCoord.locationTypeID = tblLoc.locationTypeID"
-		,
->>>>>>> 6979d28f0c01bd827044d0fb355cca671b2d5fe7
         function(err, rowCount, rows)
         {
             console.log(rowCount + ' row(s) returned');
             process.exit();
         }
     );
-
-    request.on('row', function(columns) {
+	
+	request.on('row', function(columns) {
         columns.forEach(function(column) {
-            console.log("%s\t%s", column.metadata.colName, column.value);
+            arr.push(column.value);
         });
     });
-<<<<<<< HEAD
 	
 	//check if all objects come in. 
 	console.log(arr);
@@ -109,7 +102,4 @@ function queryDatabase()
 		console.log(output);
 		return output;
 	}
-=======
-    connection.execSql(request);
->>>>>>> 6979d28f0c01bd827044d0fb355cca671b2d5fe7
 }
