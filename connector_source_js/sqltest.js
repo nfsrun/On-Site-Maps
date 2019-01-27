@@ -36,10 +36,9 @@ function queryDatabase()
     console.log('Reading rows from the Table...');
 	var arr = [];
 	var arr1 = [];
-	var request1 = 
     // Read all rows from table
 	var request = new Request(
-        "SELECT objectID FROM [dbo].[tblObject]"
+        "SELECT objectID FROM [dbo].[tblObject]",
         function(err, rowCount, rows)
         {
             console.log(rowCount + ' row(s) returned');
