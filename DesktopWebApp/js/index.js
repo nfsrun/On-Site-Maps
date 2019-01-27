@@ -21,9 +21,9 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=p
 socket.on('news', function (data) {
     console.log(data);
 
-    for (let i = 0; i < data.length; i += 4) {
-        var lat = data[i + 1];
-        var long = data[i + 2];
+    for (let i = 0; i < data.length; i += 2) {
+        var lat = data[i] + 11.4763;
+        var long = data[i + 1] - 0.83845;
         console.log(lat);
         console.log(long);
         var circle0 = L.circle([lat, long], {

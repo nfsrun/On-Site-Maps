@@ -48,7 +48,8 @@ async function queryDatabase() {
 	var arr1 = [];
     // Read all rows from table
 	var request = new Request(
-        "SELECT * FROM tblData",
+        // "SELECT * FROM tblData",
+        "SELECT LAT, LONG FROM tblCoordinate",
         function(err, rowCount, rows)
         {
         }
@@ -73,71 +74,9 @@ async function queryDatabase() {
         console.log('Connection')
     });
 
-	//check if all objects come in. 
 
-    var i;
-	
-	var output = '{\n\t\"output\" : [';
-	
-		for(let i = 0; i < arr.length; i++) {
-			output.concat("\n\t\t{\n");
-			console.log(output);
-			var first = true;
-			var request1 = new Request(
-				"SELECT tblLoc.locationTypeName AS LocationType, coord.long AS long, coord.lat AS lat  FROM [dbo].[tblCoordinate] coord "
-					+ "JOIN [dbo].[tblObject] obj ON obj.objectID = coord.objectID "
-					+ "JOIN [dbo].[tblLocationType] tblLoc ON obj.locationTypeID = tblLoc.locationTypeID "
-					+ "WHERE obj.objectID = " + arr[0][0],
-				function(err, rowCount, rows)
-				{
-					//console.log(rowCount + ' row(s) returned');
-					//process.exit();
-				}
-			);
-			connection.execSql(request1);
-			await new Promise(function(resolve, reject) {
-				request.on('row', function(rows) {
-					rows.forEach(function(column) {
-						if(first == true){
-							first = false;
-							output.concat('\t\t\tLocationType: ');
-							output.concat(column.value);
-							output.concat(",\n");
-						}else if(column.metadata.colName == 'lat'){
-							output.concat('\t\t\tLat: ');
-							output.concat(column.value);
-							output.concat(",\n");
-						}else if(column.metadata.colName == 'long'){
-							output.concat('\t\t\tLong: ');
-							output.concat(column.value);
-							output.concat("\n\t\t},");
-						}
-					})
-					resolve(arr);
-				})
-			});
-		}
-		console.log(output);
-		output = output.substr(0,output.length - 1);
-		output.concat("\n\t]\n}");
-	
-	//check if array output is as thought of
-	console.log(output);
-    return output;
+    return outputArr;
 }
-
-// Transfer data to and render front end
-
-// io.on('connection', function(socket) {
-//     console.log(outputArr);
-//     console.log("HELLO 2");
-//     // socket.emit('news', [{lat: 456}, {long: 123}]);
-//     socket.emit('news', outputArr);
-//     socket.on('my other event', function (data) {
-//         console.log(data);
-//     });
-//     console.log('Connection')
-// });
 
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + '/index.html'));
