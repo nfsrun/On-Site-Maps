@@ -36,7 +36,7 @@ let connection = new Connection(config);
 var outputArr = [];
 connection.on('connect', function(err) {
     if (err) {
-        console.log(err)
+        // console.log(err)
     } else {
         console.log('Successful connect');
         outputArr = queryDatabase();
@@ -62,14 +62,13 @@ async function queryDatabase() {
             });
             resolve(arr);
         });
-
     });
 
     io.on('connection', function(socket) {
         // console.log(arr);
         socket.emit('news', arr);
         socket.on('my other event', function (data) {
-            console.log(data);
+            // console.log(data);
         });
         console.log('Connection')
     });
@@ -80,48 +79,51 @@ async function queryDatabase() {
 	
 	var output = '{\n\t\"output\" : [';
 	
-	// for(i = 0; i < arr.length; i++) {
-	// 	output.concat("\n\t\t{\n");
-	// 	var first = true;
-	// 	var request1 = new Request(
-	// 		"SELECT tblLoc.locationTypeName AS LocationType, coord.long AS long, coord.lat AS lat  FROM [dbo].[tblCoordinate] coord "
-	// 			+ "JOIN [dbo].[tblObject] obj ON obj.objectID = coord.objectID "
-	// 			+ "JOIN [dbo].[tblLocationType] tblLoc ON obj.locationTypeID = tblLoc.locationTypeID "
-	// 			+ "WHERE obj.objectID = " + arr[i],
-	// 		function(err, rowCount, rows)
-	// 		{
-	// 			console.log(rowCount + ' row(s) returned');
-	// 			process.exit();
-	// 		}
-	// 	);
-	// 	request.on('row', function(columns) {
-	// 		columns.forEach(function(column) {
-	// 			if(column.metadata.colName == 'LocationType' && first == true){
-	// 				first = false;
-	// 				output.concat('\t\t\tLocationType: ');
-	// 				output.concat(column.value);
-	// 				output.concat(",\n");
-	// 			}else if(column.metadata.colName == 'lat'){
-	// 				output.concat('\t\t\tLat: ');
-	// 				output.concat(column.value);
-	// 				output.concat(",\n");
-	// 			}else{
-	// 				output.concat('\t\t\tLong: ');
-	// 				output.concat(column.value);
-	// 				output.concat("\n\t\t},");
-	// 			}
-	// 		})
-	// 	});
-	// 	connection.execSql(request1);
-	// 	output = output.substr(0,output.length - 1);
-	// 	output.concat("\n\t]\n}");
-		
-    //     //check if array output is as thought of
-	// 	console.log(output);
-	// 	return output;
-    // }
-    // }
-    return arr;
+		for(let i = 0; i < arr.length; i++) {
+			output.concat("\n\t\t{\n");
+			console.log(output);
+			var first = true;
+			var request1 = new Request(
+				"SELECT tblLoc.locationTypeName AS LocationType, coord.long AS long, coord.lat AS lat  FROM [dbo].[tblCoordinate] coord "
+					+ "JOIN [dbo].[tblObject] obj ON obj.objectID = coord.objectID "
+					+ "JOIN [dbo].[tblLocationType] tblLoc ON obj.locationTypeID = tblLoc.locationTypeID "
+					+ "WHERE obj.objectID = " + arr[0][0],
+				function(err, rowCount, rows)
+				{
+					//console.log(rowCount + ' row(s) returned');
+					//process.exit();
+				}
+			);
+			connection.execSql(request1);
+			await new Promise(function(resolve, reject) {
+				request.on('row', function(rows) {
+					rows.forEach(function(column) {
+						if(first == true){
+							first = false;
+							output.concat('\t\t\tLocationType: ');
+							output.concat(column.value);
+							output.concat(",\n");
+						}else if(column.metadata.colName == 'lat'){
+							output.concat('\t\t\tLat: ');
+							output.concat(column.value);
+							output.concat(",\n");
+						}else if(column.metadata.colName == 'long'){
+							output.concat('\t\t\tLong: ');
+							output.concat(column.value);
+							output.concat("\n\t\t},");
+						}
+					})
+					resolve(arr);
+				})
+			});
+		}
+		console.log(output);
+		output = output.substr(0,output.length - 1);
+		output.concat("\n\t]\n}");
+	
+	//check if array output is as thought of
+	console.log(output);
+    return output;
 }
 
 // Transfer data to and render front end
