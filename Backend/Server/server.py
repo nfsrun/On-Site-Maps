@@ -88,6 +88,6 @@ def index3():
     return jsonify(jsonData)
 
 
-# a method to run the app
+# a method to run the app so that it renders on the localhost
 if __name__ == '__main__':
     app.run(debug=True)
