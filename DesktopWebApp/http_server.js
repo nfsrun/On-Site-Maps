@@ -39,23 +39,18 @@ connection.on('connect', function(err) {
         console.log(err)
     } else {
         console.log('Successful connect');
-        // sqlQuery();
         outputArr = queryDatabase();
     }
 });
 
-async function queryDatabase()
-{
+async function queryDatabase() {
 	var arr = [];
 	var arr1 = [];
     // Read all rows from table
 	var request = new Request(
-        // "SELECT objectID FROM [dbo].[tblObject]",
         "SELECT * FROM tblData",
         function(err, rowCount, rows)
         {
-            // console.log(err);
-            // console.log(rowCount + ' row(s) returned');
         }
     );
 
@@ -63,32 +58,22 @@ async function queryDatabase()
 	var arr = await new Promise(function(resolve, reject) {
         request.on('row', function(columns) {
             columns.forEach(function(column) {
-                // console.log("Point");
                 arr.push(column.value);
-                // console.log(arr);
             });
             resolve(arr);
         });
 
     });
 
+    io.on('connection', function(socket) {
+        console.log(arr);
+        socket.emit('news', arr);
+        socket.on('my other event', function (data) {
+            console.log(data);
+        });
+        console.log('Connection')
+    });
 
-    console.log(arr);
-    // console.log("76");
-    // console.log(arr);       
-    // io.on('connection', function(socket) {
-    //     // socket.emit('news', [{lat: 456}, {long: 123}]);
-    //     socket.emit('news', outputArr);
-    //     socket.on('my other event', function (data) {
-    //         console.log(data);
-    //     });
-    //     console.log('Connection')
-    // });
-    
-    // console.log("1:"); 
-    // console.log(arr);
-    // console.log("2:");
-    // console.log(arr);
 	//check if all objects come in. 
 
     var i;
@@ -142,16 +127,16 @@ async function queryDatabase()
 
 // Transfer data to and render front end
 
-io.on('connection', function(socket) {
-    console.log(outputArr);
-    console.log("HELLO");
-    // socket.emit('news', [{lat: 456}, {long: 123}]);
-    socket.emit('news', outputArr);
-    socket.on('my other event', function (data) {
-        console.log(data);
-    });
-    console.log('Connection')
-});
+// io.on('connection', function(socket) {
+//     console.log(outputArr);
+//     console.log("HELLO 2");
+//     // socket.emit('news', [{lat: 456}, {long: 123}]);
+//     socket.emit('news', outputArr);
+//     socket.on('my other event', function (data) {
+//         console.log(data);
+//     });
+//     console.log('Connection')
+// });
 
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + '/index.html'));
