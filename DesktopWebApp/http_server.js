@@ -17,6 +17,7 @@ const port = 3000;
 // Calls to SQL server
 
 const Connection = require('tedious').Connection;
+
 const Request = require('tedious').Request;
 
 const config = {
@@ -25,6 +26,7 @@ const config = {
     server: 'edhackssqlserver.database.windows.net',
     options: {
         database: 'edhacks',
+		
         encrypt: true
     }
 }
@@ -38,7 +40,7 @@ connection.on('connect', function(err) {
     } else {
         console.log('Successful connect');
         // sqlQuery();
-        queryDatabase();
+        outputArr = queryDatabase();
     }
 });
 
@@ -52,25 +54,26 @@ async function queryDatabase()
         "SELECT * FROM tblData",
         function(err, rowCount, rows)
         {
-            console.log(err);
-            console.log(rowCount + ' row(s) returned');
+            // console.log(err);
+            // console.log(rowCount + ' row(s) returned');
         }
     );
-    connection.execSql(request);
 
+    connection.execSql(request);
 	var arr = await new Promise(function(resolve, reject) {
-        
         request.on('row', function(columns) {
             columns.forEach(function(column) {
+                // console.log("Point");
                 arr.push(column.value);
+                // console.log(arr);
             });
             resolve(arr);
         });
 
-        
     });
 
 
+    console.log(arr);
     // console.log("76");
     // console.log(arr);       
     // io.on('connection', function(socket) {
@@ -90,9 +93,7 @@ async function queryDatabase()
 
     var i;
 	
-	// INSERT JSON CREATOR HERE
-	
-	// var output = '{\n\t\"output\" : [';
+	var output = '{\n\t\"output\" : [';
 	
 	// for(i = 0; i < arr.length; i++) {
 	// 	output.concat("\n\t\t{\n");
@@ -134,29 +135,23 @@ async function queryDatabase()
 	// 	console.log(output);
 	// 	return output;
     // }
+    // }
     return arr;
-}
-
-
-
-
-async function makeQuery() {
-    var returnArr = await queryDatabase();
-    console.log(returnArr);
-    return returnArr; 
 }
 
 
 // Transfer data to and render front end
 
-// io.on('connection', function(socket) {
-//     // socket.emit('news', [{lat: 456}, {long: 123}]);
-//     socket.emit('news', outputArr);
-//     socket.on('my other event', function (data) {
-//         console.log(data);
-//     });
-//     console.log('Connection')
-// });
+io.on('connection', function(socket) {
+    console.log(outputArr);
+    console.log("HELLO");
+    // socket.emit('news', [{lat: 456}, {long: 123}]);
+    socket.emit('news', outputArr);
+    socket.on('my other event', function (data) {
+        console.log(data);
+    });
+    console.log('Connection')
+});
 
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + '/index.html'));
@@ -169,4 +164,4 @@ app.get('/js/index.js', function(req, res) {
 app.use('/', router);
 server.listen(port, function() {
     console.log('Server started on port 3000...');
-})
+});
