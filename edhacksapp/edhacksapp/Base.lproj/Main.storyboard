@@ -129,10 +129,10 @@
             </objects>
             <point key="canvasLocation" x="1359.375" y="168.75"/>
         </scene>
-        <!--View Controller-->
+        <!--Get Location-->
         <scene sceneID="ztr-VM-DA9">
             <objects>
-                <viewController id="jhI-gV-11Z" sceneMemberID="viewController">
+                <viewController id="jhI-gV-11Z" customClass="GetLocation" customModule="edhacksapp" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="aB5-or-f9r"/>
                         <viewControllerLayoutGuide type="bottom" id="ogQ-bp-khK"/>
@@ -149,6 +149,9 @@
                                 <state key="normal" title="Line">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
+                                <connections>
+                                    <segue destination="DeM-2Z-qx1" kind="show" identifier="asLine" id="xZa-BC-Tma"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pXS-AK-5hX">
                                 <rect key="frame" x="67" y="472" width="240" height="63"/>
@@ -158,6 +161,9 @@
                                 <state key="normal" title="Polygon">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
+                                <connections>
+                                    <segue destination="DeM-2Z-qx1" kind="show" identifier="asPolygon" id="Fyn-gn-04Q"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="SELECT TYPE OF VECTOR DATA" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PsD-fA-1wN">
                                 <rect key="frame" x="39" y="74" width="296" height="146"/>
@@ -174,6 +180,9 @@
                                 <state key="normal" title="Point">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
+                                <connections>
+                                    <segue destination="DeM-2Z-qx1" kind="show" identifier="asPoint" id="8W7-ue-kug"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" red="0.77819114923477173" green="0.63564063972414564" blue="0.52964331809271847" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -181,7 +190,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="imC-bn-UGh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1357.5999999999999" y="884.70764617691157"/>
+            <point key="canvasLocation" x="1359" y="866"/>
         </scene>
         <!--Get Location-->
         <scene sceneID="046-5s-Tiz">
@@ -248,4 +257,7 @@
             <point key="canvasLocation" x="2208.8000000000002" y="865.81709145427294"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="Fyn-gn-04Q"/>
+    </inferredMetricsTieBreakers>
 </document>
