@@ -66,7 +66,7 @@ async function queryDatabase() {
     });
 
     io.on('connection', function(socket) {
-        console.log(arr);
+        // console.log(arr);
         socket.emit('news', arr);
         socket.on('my other event', function (data) {
             console.log(data);
@@ -123,7 +123,6 @@ async function queryDatabase() {
     // }
     return arr;
 }
-
 
 // Transfer data to and render front end
 
