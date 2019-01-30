@@ -1,4 +1,4 @@
-# On-Site Mapping
+# On-Site Maps
 
 Scenario: There are still areas around the globe that has not been mapped or pictured by anyone. With our solution, the volunteer can map out unmapped location around the globe with their smartphone device.
 
